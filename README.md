@@ -1,73 +1,100 @@
-# Welcome to your Lovable project
+# Terminal Emulator Portfolio - Ushnish Ghosal
 
-## Project info
+A retro-futuristic terminal emulator portfolio website built with React, TypeScript, and Tailwind CSS. Experience a fully interactive command-line interface with authentic CRT effects, boot sequences, and shell-like functionality.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Features
 
-## How can I edit this code?
+- **Authentic Terminal Experience**: Full command-line interface with command history, tab completion, and arrow key navigation
+- **Retro CRT Effects**: Scanlines, text glow, vignette, and subtle glitch effects for that authentic CRT monitor feel (without disturbing flicker)
+- **Voice Cues & Sound Effects**: Retro terminal sounds for keystrokes, commands, errors, and success events (toggle with `sound` command)
+- **Boot Sequence**: Linux kernel-style boot animation with audio on initial load
+- **Interactive Help**: User-friendly command reference with categories, icons, and helpful tips
+- **Mobile Responsive**: Works seamlessly on all devices
+- **Command Aliases**: Support for common shell aliases (cls → clear, experience → exp, etc.)
 
-There are several ways of editing your application.
+## Available Commands
 
-**Use Lovable**
+- `help` - Display all available commands
+- `whoami` - About Ushnish Ghosal
+- `skills` - Technical skills and expertise
+- `exp` / `experience` - Work experience timeline
+- `projects` - Featured projects
+- `socials` / `contact` - Contact information and social links
+- `stars` - GitHub starred repositories (live data)
+- `posts` - LinkedIn posts feed
+- `resume` - Download resume PDF with progress bar
+- `sound` / `audio` - Toggle sound effects on/off
+- `clear` / `cls` - Clear terminal screen
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### Sound Effects
 
-Changes made via Lovable will be committed automatically to this repo.
+The terminal includes authentic retro sound effects:
+- Keystroke beeps for typing feedback
+- Command execution sounds
+- Error alerts for invalid commands
+- Success chimes for completed actions
+- Boot completion sound
+- Tab completion feedback
+- Clear screen swoosh
 
-**Use your preferred IDE**
+Toggle sounds on/off anytime with the `sound` command.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Technologies Used
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **React 18** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **Tailwind CSS** - Styling
+- **Framer Motion** - Animations (via tailwindcss-animate)
 
-Follow these steps:
+## Getting Started
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Install dependencies
+npm install
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-**Edit a file directly in GitHub**
+## Project Structure
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```
+src/
+├── components/
+│   └── terminal/
+│       ├── BootSequence.tsx    # Boot animation
+│       ├── TerminalPrompt.tsx  # Input prompt
+│       └── TerminalOutput.tsx  # Output renderer
+├── lib/
+│   └── commandParser.tsx       # Command logic
+├── pages/
+│   └── Index.tsx              # Main terminal page
+└── index.css                  # Global styles & CRT effects
+```
 
-**Use GitHub Codespaces**
+## Customization
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+To customize the portfolio for your own use:
 
-## What technologies are used for this project?
+1. Update personal information in `src/lib/commandParser.tsx`
+2. Replace resume PDF in `public/Ushnish_Ghosal.pdf`
+3. Modify color scheme in `src/index.css` (CSS variables)
+4. Add/remove commands in the command parser
 
-This project is built with:
+## Color Scheme
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- Background: Deep obsidian (#0a0a0a)
+- Primary text: Electric green (#00ff41)
+- Accent: Retro amber (#ffa500)
+- All colors include authentic CRT glow effects
 
-## How can I deploy this project?
+## License
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+MIT

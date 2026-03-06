@@ -85,21 +85,73 @@
   50%, 100% { opacity: 0; }
 }
 
-@keyframes flicker {
-  0% { opacity: 0.97; }
-  5% { opacity: 0.95; }
-  10% { opacity: 0.98; }
-  15% { opacity: 0.93; }
-  20% { opacity: 0.97; }
-  100% { opacity: 0.98; }
+@keyframes line-glitch {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  10% {
+    transform: translateX(-2px);
+    opacity: 0.8;
+  }
+  20% {
+    transform: translateX(2px);
+    opacity: 0.9;
+  }
+  30% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes subtle-glow-pulse {
+  0%, 100% {
+    text-shadow: 0 0 8px hsl(120 100% 50% / 0.6);
+  }
+  50% {
+    text-shadow: 0 0 10px hsl(120 100% 50% / 0.7);
+  }
+}
+
+@keyframes scanline-move {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
 }
 
 .animate-blink {
   animation: blink 1s step-end infinite;
 }
 
-.animate-flicker {
-  animation: flicker 0.15s infinite;
+.line-glitch {
+  animation: line-glitch 0.3s ease-in-out;
+}
+
+.subtle-glow {
+  animation: subtle-glow-pulse 3s ease-in-out infinite;
+}
+
+/* Occasional glitch line effect */
+.glitch-line {
+  position: relative;
+}
+
+.glitch-line::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, hsl(120 100% 50% / 0.3), transparent);
+  animation: scanline-move 8s linear infinite;
+  pointer-events: none;
 }
 
 ::-webkit-scrollbar {

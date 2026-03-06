@@ -2,7 +2,11 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { BootSequence } from "@/components/terminal/BootSequence";
 import { TerminalPrompt } from "@/components/terminal/TerminalPrompt";
 import { TerminalOutput } from "@/components/terminal/TerminalOutput";
+import { GlitchEffect } from "@/components/terminal/GlitchEffect";
+import { WindowFrame } from "@/components/terminal/WindowFrame";
+import { InteractiveMenu } from "@/components/terminal/InteractiveMenu";
 import { parseCommand, ALL_COMMANDS, resolveAlias } from "@/lib/commandParser";
+import { audioManager } from "@/lib/audioManager";
 
 interface HistoryEntry {
   id: number;
@@ -50,6 +54,9 @@ const Terminal = () => {
     const trimmed = cmd.trim().toLowerCase();
     if (!trimmed) return;
 
+    // Play command execute sound
+    audioManager.playCommandExecute();
+
     // Add to command history
     setCommandHistory((prev) => {
       const updated = [...prev, trimmed];
@@ -60,12 +67,19 @@ const Terminal = () => {
     const resolved = resolveAlias(trimmed);
 
     if (resolved === "clear") {
+      audioManager.playClear();
       setHistory([]);
       setCurrentInput("");
       return;
     }
 
     const output = parseCommand(trimmed);
+    
+    // Play error sound if command not found
+    if (typeof output === 'object' && output && 'type' in output && output.type === 'error') {
+      audioManager.playError();
+    }
+    
     setHistory((prev) => [
       ...prev,
       { id: commandCounter, command: cmd, output },
@@ -78,7 +92,10 @@ const Terminal = () => {
     if (!partial) return partial;
     const lower = partial.toLowerCase();
     const matches = ALL_COMMANDS.filter((c) => c.startsWith(lower));
-    if (matches.length === 1) return matches[0];
+    if (matches.length === 1) {
+      audioManager.playTabComplete();
+      return matches[0];
+    }
     return partial;
   }, []);
 
@@ -117,48 +134,58 @@ const Terminal = () => {
   }
 
   return (
-    <div
-      className="min-h-screen bg-background text-foreground font-mono p-4 md:p-6 cursor-text relative overflow-hidden animate-flicker"
-      onClick={focusInput}
-    >
-      {/* CRT scanlines overlay */}
-      <div className="fixed inset-0 crt-scanlines z-10" />
-
+    <WindowFrame>
       <div
-        ref={terminalRef}
-        className="relative z-20 max-w-4xl mx-auto overflow-y-auto"
-        style={{ maxHeight: "calc(100vh - 2rem)" }}
+        className="h-full bg-background text-foreground font-mono relative overflow-hidden"
+        onClick={focusInput}
       >
-        {/* Welcome message */}
-        <div className="mb-4 text-foreground text-glow">
-          <p>Welcome to Ushnish's Terminal Portfolio v1.0.0</p>
-          <p className="text-muted-foreground">Type <span className="text-foreground text-glow">'help'</span> to see available commands.</p>
-          <br />
-        </div>
+        {/* CRT scanlines overlay */}
+        <div className="absolute inset-0 crt-scanlines z-10 pointer-events-none" />
+        
+        {/* Subtle moving scanline glitch */}
+        <div className="absolute inset-0 glitch-line pointer-events-none z-10" />
+        
+        {/* Random glitch effects */}
+        <GlitchEffect />
+        
+        {/* Vignette effect */}
+        <div className="absolute inset-0 pointer-events-none z-10" style={{
+          background: 'radial-gradient(ellipse at center, transparent 0%, transparent 70%, rgba(0,0,0,0.3) 100%)'
+        }} />
 
-        {/* Command history */}
-        {history.map((entry) => (
-          <div key={entry.id} className="mb-4">
-            <div className="flex items-center gap-0 flex-wrap">
-              <span className="text-accent text-glow-amber font-bold">ushnish</span>
-              <span className="text-foreground text-glow">@</span>
-              <span className="text-accent text-glow-amber font-bold">portfolio</span>
-              <span className="text-foreground text-glow">:~$ </span>
-              <span className="text-foreground text-glow">{entry.command}</span>
+
+        {/* Scrollable Content Area */}
+        <div
+          ref={terminalRef}
+          className="relative z-20 h-full overflow-y-auto p-4 md:p-6"
+        >
+          {/* Welcome Section with Collapsible Menu */}
+          <InteractiveMenu onCommandExecute={handleCommand} />
+
+          {/* Command history */}
+          {history.map((entry) => (
+            <div key={entry.id} className="mb-4">
+              <div className="flex items-center gap-0 flex-wrap">
+                <span className="text-accent text-glow-amber font-bold">ushnish</span>
+                <span className="text-foreground text-glow">@</span>
+                <span className="text-accent text-glow-amber font-bold">portfolio</span>
+                <span className="text-foreground text-glow">:~$ </span>
+                <span className="text-foreground text-glow">{entry.command}</span>
+              </div>
+              <TerminalOutput>{entry.output}</TerminalOutput>
             </div>
-            <TerminalOutput>{entry.output}</TerminalOutput>
-          </div>
-        ))}
+          ))}
 
-        {/* Active prompt */}
-        <TerminalPrompt
-          value={currentInput}
-          onChange={setCurrentInput}
-          onKeyDown={handleKeyDown}
-          inputRef={inputRef}
-        />
+          {/* Active prompt */}
+          <TerminalPrompt
+            value={currentInput}
+            onChange={setCurrentInput}
+            onKeyDown={handleKeyDown}
+            inputRef={inputRef}
+          />
+        </div>
       </div>
-    </div>
+    </WindowFrame>
   );
 };
 

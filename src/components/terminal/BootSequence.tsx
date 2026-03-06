@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { audioManager } from "@/lib/audioManager";
 
 const BOOT_LINES = [
   "[    0.000000] Linux version 6.1.0-portfolio (ushnish@dev) (gcc 12.2.0)",
@@ -60,6 +61,7 @@ export const BootSequence = ({ onComplete }: BootSequenceProps) => {
         i++;
       } else {
         clearInterval(interval);
+        audioManager.playBootComplete();
         setTimeout(() => setDone(true), 600);
         setTimeout(() => onComplete(), 1200);
       }
@@ -69,8 +71,14 @@ export const BootSequence = ({ onComplete }: BootSequenceProps) => {
   }, [onComplete]);
 
   return (
-    <div className={`min-h-screen bg-background text-foreground font-mono p-4 md:p-6 transition-opacity duration-500 ${done ? "opacity-0" : "opacity-100"}`}>
-      <div className="max-w-4xl mx-auto">
+    <div className={`min-h-screen bg-background text-foreground font-mono p-4 md:p-6 transition-opacity duration-500 relative overflow-hidden ${done ? "opacity-0" : "opacity-100"}`}>
+      {/* CRT scanlines overlay */}
+      <div className="fixed inset-0 crt-scanlines z-10" />
+      
+      {/* Subtle moving scanline glitch */}
+      <div className="fixed inset-0 glitch-line pointer-events-none z-10" />
+      
+      <div className="max-w-4xl mx-auto relative z-20">
         {lines.map((line, idx) => (
           <div key={idx} className="text-glow text-sm md:text-base leading-tight whitespace-pre">
             {line}
