@@ -1,192 +1,169 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { BootSequence } from "@/components/terminal/BootSequence";
-import { TerminalPrompt } from "@/components/terminal/TerminalPrompt";
-import { TerminalOutput } from "@/components/terminal/TerminalOutput";
-import { GlitchEffect } from "@/components/terminal/GlitchEffect";
-import { WindowFrame } from "@/components/terminal/WindowFrame";
-import { InteractiveMenu } from "@/components/terminal/InteractiveMenu";
-import { parseCommand, ALL_COMMANDS, resolveAlias } from "@/lib/commandParser";
-import { audioManager } from "@/lib/audioManager";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Github, Linkedin, Mail, ExternalLink } from "lucide-react";
 
-interface HistoryEntry {
-  id: number;
-  command: string;
-  output: React.ReactNode;
-}
-
-const HISTORY_KEY = "terminal-cmd-history";
-
-function loadHistory(): string[] {
-  try {
-    const stored = localStorage.getItem(HISTORY_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch {
-    return [];
-  }
-}
-
-const Terminal = () => {
-  const [booted, setBooted] = useState(false);
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
-  const [currentInput, setCurrentInput] = useState("");
-  const [commandCounter, setCommandCounter] = useState(0);
-  const [commandHistory, setCommandHistory] = useState<string[]>(loadHistory);
-  const [historyIndex, setHistoryIndex] = useState(-1);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const terminalRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = useCallback(() => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-    }
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [history, scrollToBottom]);
-
-  // Persist command history
-  useEffect(() => {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(commandHistory));
-  }, [commandHistory]);
-
-  const handleCommand = useCallback((cmd: string) => {
-    const trimmed = cmd.trim().toLowerCase();
-    if (!trimmed) return;
-
-    // Play command execute sound
-    audioManager.playCommandExecute();
-
-    // Add to command history
-    setCommandHistory((prev) => {
-      const updated = [...prev, trimmed];
-      return updated.slice(-50); // keep last 50
-    });
-    setHistoryIndex(-1);
-
-    const resolved = resolveAlias(trimmed);
-
-    if (resolved === "clear") {
-      audioManager.playClear();
-      setHistory([]);
-      setCurrentInput("");
-      return;
-    }
-
-    const output = parseCommand(trimmed);
-    
-    // Play error sound if command not found
-    if (typeof output === 'object' && output && 'type' in output && output.type === 'error') {
-      audioManager.playError();
-    }
-    
-    setHistory((prev) => [
-      ...prev,
-      { id: commandCounter, command: cmd, output },
-    ]);
-    setCommandCounter((c) => c + 1);
-    setCurrentInput("");
-  }, [commandCounter]);
-
-  const handleTabComplete = useCallback((partial: string) => {
-    if (!partial) return partial;
-    const lower = partial.toLowerCase();
-    const matches = ALL_COMMANDS.filter((c) => c.startsWith(lower));
-    if (matches.length === 1) {
-      audioManager.playTabComplete();
-      return matches[0];
-    }
-    return partial;
-  }, []);
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleCommand(currentInput);
-    } else if (e.key === "Tab") {
-      e.preventDefault();
-      setCurrentInput(handleTabComplete(currentInput));
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      if (commandHistory.length === 0) return;
-      const newIndex = historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1);
-      setHistoryIndex(newIndex);
-      setCurrentInput(commandHistory[newIndex]);
-    } else if (e.key === "ArrowDown") {
-      e.preventDefault();
-      if (historyIndex === -1) return;
-      const newIndex = historyIndex + 1;
-      if (newIndex >= commandHistory.length) {
-        setHistoryIndex(-1);
-        setCurrentInput("");
-      } else {
-        setHistoryIndex(newIndex);
-        setCurrentInput(commandHistory[newIndex]);
-      }
-    }
-  };
-
-  const focusInput = () => {
-    inputRef.current?.focus();
-  };
-
-  if (!booted) {
-    return <BootSequence onComplete={() => setBooted(true)} />;
-  }
-
+const Index = () => {
   return (
-    <WindowFrame>
-      <div
-        className="h-full bg-background text-foreground font-mono relative overflow-hidden"
-        onClick={focusInput}
-      >
-        {/* CRT scanlines overlay */}
-        <div className="absolute inset-0 crt-scanlines z-10 pointer-events-none" />
-        
-        {/* Subtle moving scanline glitch */}
-        <div className="absolute inset-0 glitch-line pointer-events-none z-10" />
-        
-        {/* Random glitch effects */}
-        <GlitchEffect />
-        
-        {/* Vignette effect */}
-        <div className="absolute inset-0 pointer-events-none z-10" style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, transparent 70%, rgba(0,0,0,0.3) 100%)'
-        }} />
-
-
-        {/* Scrollable Content Area */}
-        <div
-          ref={terminalRef}
-          className="relative z-20 h-full overflow-y-auto p-4 md:p-6"
-        >
-          {/* Welcome Section with Collapsible Menu */}
-          <InteractiveMenu onCommandExecute={handleCommand} />
-
-          {/* Command history */}
-          {history.map((entry) => (
-            <div key={entry.id} className="mb-4">
-              <div className="flex items-center gap-0 flex-wrap">
-                <span className="text-accent text-glow-amber font-bold">ushnish</span>
-                <span className="text-foreground text-glow">@</span>
-                <span className="text-accent text-glow-amber font-bold">portfolio</span>
-                <span className="text-foreground text-glow">:~$ </span>
-                <span className="text-foreground text-glow">{entry.command}</span>
-              </div>
-              <TerminalOutput>{entry.output}</TerminalOutput>
+    <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <nav className="border-b">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold">Portfolio</h1>
+            <div className="flex gap-6">
+              <a href="#about" className="hover:text-primary transition-colors">About</a>
+              <a href="#projects" className="hover:text-primary transition-colors">Projects</a>
+              <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
             </div>
-          ))}
-
-          {/* Active prompt */}
-          <TerminalPrompt
-            value={currentInput}
-            onChange={setCurrentInput}
-            onKeyDown={handleKeyDown}
-            inputRef={inputRef}
-          />
+          </div>
         </div>
-      </div>
-    </WindowFrame>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Hi, I'm <span className="text-primary">Ushnish</span>
+          </h1>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            A passionate developer creating amazing web experiences
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Button size="lg">
+              <Github className="mr-2 h-4 w-4" />
+              GitHub
+            </Button>
+            <Button variant="outline" size="lg">
+              <Linkedin className="mr-2 h-4 w-4" />
+              LinkedIn
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-20 px-4 bg-muted/50">
+        <div className="container mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">About Me</h2>
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-lg text-muted-foreground mb-6">
+              I'm a full-stack developer with experience in modern web technologies.
+              I love building user-friendly applications and solving complex problems.
+            </p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <Badge>React</Badge>
+              <Badge>TypeScript</Badge>
+              <Badge>Node.js</Badge>
+              <Badge>Python</Badge>
+              <Badge>Tailwind CSS</Badge>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Section */}
+      <section id="projects" className="py-20 px-4">
+        <div className="container mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">Projects</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Project 1</CardTitle>
+                <CardDescription>A cool web application</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="mb-4">Description of the project goes here.</p>
+                <div className="flex gap-2">
+                  <Badge variant="secondary">React</Badge>
+                  <Badge variant="secondary">TypeScript</Badge>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <Button size="sm" variant="outline">
+                    <Github className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Project 2</CardTitle>
+                <CardDescription>Another amazing project</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="mb-4">Description of the second project.</p>
+                <div className="flex gap-2">
+                  <Badge variant="secondary">Node.js</Badge>
+                  <Badge variant="secondary">Express</Badge>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <Button size="sm" variant="outline">
+                    <Github className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Project 3</CardTitle>
+                <CardDescription>One more project</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="mb-4">Description of the third project.</p>
+                <div className="flex gap-2">
+                  <Badge variant="secondary">Python</Badge>
+                  <Badge variant="secondary">Django</Badge>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <Button size="sm" variant="outline">
+                    <Github className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 px-4 bg-muted/50">
+        <div className="container mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-12">Get In Touch</h2>
+          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            I'm always interested in new opportunities and collaborations.
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Button size="lg">
+              <Mail className="mr-2 h-4 w-4" />
+              Email Me
+            </Button>
+            <Button variant="outline" size="lg">
+              <Linkedin className="mr-2 h-4 w-4" />
+              LinkedIn
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t py-8 px-4">
+        <div className="container mx-auto text-center text-muted-foreground">
+          <p>&copy; 2024 Ushnish. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
   );
 };
 
-export default Terminal;
+export default Index;
