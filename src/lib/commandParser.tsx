@@ -150,6 +150,7 @@ const HelpOutput = () => (
       </div>
     </div>
 
+<<<<<<< HEAD
     {/* Experience & Projects */}
     <div className="space-y-2">
       <div className="flex items-center gap-2">
@@ -233,7 +234,16 @@ const HelpOutput = () => (
         <li>• Try aliases: <span className="text-accent text-glow-amber">cls</span> (clear), <span className="text-accent text-glow-amber">experience</span> (exp), <span className="text-accent text-glow-amber">contact</span> (socials)</li>
         <li>• Some files might be hidden... try using <span className="text-accent text-glow-amber">cat</span> 🐱</li>
       </ul>
+=======
+    <p className="text-accent text-glow-amber font-bold mt-3">[ UTILS ]</p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1 ml-2">
+      <div><span className="text-accent text-glow-amber">resume</span>    <span className="text-muted-foreground">— Download official resume PDF</span></div>
+      <div><span className="text-accent text-glow-amber">clear</span>     <span className="text-muted-foreground">— Clear terminal</span></div>
+      <div><span className="text-accent text-glow-amber">help</span>      <span className="text-muted-foreground">— Show this message</span></div>
+>>>>>>> 79296d2af9469e382341d01e339b41eac6521e0f
     </div>
+
+    <p className="text-muted-foreground mt-3 text-xs italic">Psst... try <span className="text-accent text-glow-amber">wip</span>, <span className="text-accent text-glow-amber">cat publications.txt</span>, <span className="text-accent text-glow-amber">cat hobbies</span>, or <span className="text-accent text-glow-amber">sudo</span> 👀</p>
   </div>
 );
 
@@ -298,7 +308,7 @@ const ExpOutput = () => (
     <div className="border-l-2 border-accent pl-3">
       <p className="text-muted-foreground">[Aug 2025 – Present]</p>
       <p className="text-accent text-glow-amber font-bold">Vice Chairperson — IEEE Computer Society, SRM</p>
-      <p>Organized the ICT Quiz and coordinated the DVP Roadshow.</p>
+      <p>Coordinated DVP Roadshow and organized ICT Quiz.</p>
     </div>
   </div>
 );
@@ -308,7 +318,7 @@ const ProjectsOutput = () => (
     <div className="border border-border p-3">
       <p className="text-accent text-glow-amber font-bold">TerraScan <span className="text-muted-foreground font-normal">(2025)</span></p>
       <p className="text-muted-foreground italic">AI + IoT Autonomous Drone for Landmine Detection</p>
-      <p className="mt-1">Developed a pipeline achieving 95% detection accuracy using YOLO v11, PyTorch, LiDAR, and GPR.</p>
+      <p className="mt-1">Developed a pipeline achieving 95% detection accuracy. Tech: YOLO v11, PyTorch, LiDAR, GPR, Thermal Camera, Raspberry Pi.</p>
     </div>
     <div className="border border-border p-3">
       <p className="text-accent text-glow-amber font-bold">Fit Fusion <span className="text-muted-foreground font-normal">(2025)</span></p>
@@ -328,7 +338,7 @@ const StarsOutput = () => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetch("https://api.github.com/users/UshnishG/starred?per_page=6")
+    fetch("https://api.github.com/users/UshnishG/starred?per_page=5")
       .then((r) => r.json())
       .then((data) => setRepos(Array.isArray(data) ? data : []))
       .catch(() => setError(true));
@@ -353,6 +363,7 @@ const StarsOutput = () => {
 
 const PostsOutput = () => {
   const posts = [
+<<<<<<< HEAD
     {
       id: "7412534773643919360",
       title: "2025 LinkedIn Wrapped: Quality Over Quantity",
@@ -377,10 +388,16 @@ const PostsOutput = () => {
       url: "https://www.linkedin.com/posts/ushnishghosal_comebackstory-resilience-consistency-activity-7359247914390482945-bRru",
       tags: ["ComebackStory", "Resilience", "Consistency", "GrowthMindset", "TopAchiever", "NeverGiveUp"]
     },
+=======
+    "urn:li:share:7412534773643919360?collapsed=1",
+    "urn:li:share:7403840281223368705",
+    "urn:li:share:7359247914390482945",
+>>>>>>> 79296d2af9469e382341d01e339b41eac6521e0f
   ];
 
   return (
     <div className="space-y-4">
+<<<<<<< HEAD
       <p className="text-accent text-glow-amber font-bold text-lg mb-3">📝 Top LinkedIn Posts</p>
       {posts.map((post, idx) => (
         <div key={post.id} className="border border-border p-4 hover:border-accent transition-colors">
@@ -552,6 +569,21 @@ const CertificationsOutput = () => {
               )}
             </div>
           </div>
+=======
+      <p className="text-accent text-glow-amber font-bold">LinkedIn Feed:</p>
+      <div className="grid grid-cols-1 gap-4">
+        {posts.map((urn) => (
+          <iframe
+            key={urn}
+            src={`https://www.linkedin.com/embed/feed/update/${urn}`}
+            width="100%"
+            height="669"
+            frameBorder="0"
+            allowFullScreen
+            title="LinkedIn Post"
+            className="border border-border rounded-none max-w-full"
+          />
+>>>>>>> 79296d2af9469e382341d01e339b41eac6521e0f
         ))}
       </div>
       <div className="mt-4 pt-3 border-t border-border text-muted-foreground text-sm">
@@ -585,6 +617,59 @@ const SocialsOutput = () => (
   </div>
 );
 
+<<<<<<< HEAD
+=======
+const WipOutput = () => (
+  <div className="space-y-1 text-sm font-mono">
+    <p><span className="text-muted-foreground">drwxr-xr-x</span>  <span className="text-accent text-glow-amber">la_drizzle_pos/</span> <span className="text-muted-foreground">(FastAPI, React - Role-based access)</span></p>
+    <p><span className="text-muted-foreground">drwxr-xr-x</span>  <span className="text-accent text-glow-amber">dmind_disaster_management_drone/</span> <span className="text-muted-foreground">(Co-pilot: Keshav Gupta)</span></p>
+  </div>
+);
+
+const CatOutput = ({ file }: { file: string }) => {
+  switch (file) {
+    case "publications.txt":
+      return (
+        <div className="text-sm space-y-2">
+          <p><span className="text-accent text-glow-amber font-bold">[ STATUS: PENDING PUBLICATION ]</span></p>
+          <p className="mt-1"><span className="text-muted-foreground">Title:</span> Agentic LLMs for FCAPS: A Real-Time, Multi-Model Framework for Intelligent Network Observability</p>
+          <p><span className="text-muted-foreground">Framework Name:</span> <span className="text-accent text-glow-amber">INFER</span> (Intelligent Network Fault Evaluation & Resolution)</p>
+          <p><span className="text-muted-foreground">Abstract:</span> This paper presents an end-to-end operational pipeline utilizing multiple Large Language Models. The modular pipeline employs Phi-2 for rapid classification, Mistral 7B for semantic summarization, and DeepSeek R1 8B for deep reasoning. It leverages FAISS and Redis for semantic vector storage and contextual retrieval, alongside an LSTM-based forecasting module. The system achieves <span className="text-accent text-glow-amber font-bold">98.4% classification accuracy</span> and <span className="text-accent text-glow-amber font-bold">sub-300ms processing latency</span>.</p>
+        </div>
+      );
+    case "hobbies":
+      return (
+        <div className="text-sm">
+          <p className="text-destructive font-bold">⚠ System anomaly detected.</p>
+          <p className="mt-1">User is an avid keyboardist and piano player.</p>
+          <p className="text-muted-foreground">Side-effect: Types at 90 Words Per Minute.</p>
+        </div>
+      );
+    default:
+      return <p className="text-destructive">cat: {file}: No such file or directory</p>;
+  }
+};
+
+const SudoOutput = () => {
+  const [phase, setPhase] = useState<"password" | "response">("password");
+
+  useEffect(() => {
+    const t = setTimeout(() => setPhase("response"), 1500);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (phase === "password") {
+    return <p className="text-muted-foreground">[sudo] password for ushnish: ********</p>;
+  }
+  return (
+    <div>
+      <p className="text-destructive font-bold">Nice try.</p>
+      <p className="text-muted-foreground">This incident will be reported to the Santa Claus. 🎅</p>
+    </div>
+  );
+};
+
+>>>>>>> 79296d2af9469e382341d01e339b41eac6521e0f
 const ResumeDownload = () => {
   const [progress, setProgress] = useState(0);
 
