@@ -4,8 +4,12 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 120 100% 50%;
+    /* Computational Universe palette: black / midnight navy, electric blue, cyan, violet */
+    --background: 230 45% 3%;
+    --foreground: 220 30% 92%;
+    --electric: 222 100% 59%;
+    --cyan: 190 90% 52%;
+    --violet: 262 83% 66%;
 
     --card: 0 0% 6%;
     --card-foreground: 120 100% 50%;
@@ -55,7 +59,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
   }
 }
 
